@@ -14,9 +14,11 @@ struct Character: Codable, Hashable, Identifiable {
     let imageName: String
     let category: String
     
+    
     enum CodingKeys: String, CodingKey {
         case name, imageName, category
     }
+   
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(name)

@@ -10,6 +10,7 @@ import UIKit
 import SwiftUI
 
 class SingleSectionCharactersViewControler: UIViewController {
+    
     private let collectionView: UICollectionView = .init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let segmentedControl = UISegmentedControl(
         items: Universe.allCases.map { $0.title }
@@ -21,16 +22,19 @@ class SingleSectionCharactersViewControler: UIViewController {
         }
     }
     
+    
     private func updateCollectionView(oldItems: [Character], newItems: [Character]) {
         collectionView.performBatchUpdates {
             let diff = newItems.difference(from: oldItems)
             
             diff.forEach { [weak self] (change) in
+                guard let self = self else { return }
+                
                 switch change {
                     case let .remove(offset, _, _):
-                        self?.collectionView.deleteItems(at: [IndexPath(item: offset, section: 0)])
+                        self.collectionView.deleteItems(at: [IndexPath(item: offset, section: 0)])
                     case let .insert(offset, _, _):
-                        self?.collectionView.insertItems(at: [IndexPath(item: offset, section: 0)])
+                        self.collectionView.insertItems(at: [IndexPath(item: offset, section: 0)])
                 }
             }
         } completion: { (_) in
@@ -43,6 +47,7 @@ class SingleSectionCharactersViewControler: UIViewController {
         }
     }
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationItem()
@@ -51,56 +56,64 @@ class SingleSectionCharactersViewControler: UIViewController {
         setupLayout()
     }
     
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         collectionView.collectionViewLayout.invalidateLayout()
     }
     
+    
     private func setupNavigationItem() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "shuffle"), style: .plain, target: self, action: #selector(shuffleTapped))
+        navigationItem.rightBarButtonItem = .init(image: UIImage(systemName: "shuffle"), style: .plain, target: self, action: #selector(shuffleTapped))
     }
+    
     
     @objc private func shuffleTapped() {
         characters.shuffle()
     }
     
+    
     private func setupSegmentedControl() {
-        navigationItem.titleView = segmentedControl
-        segmentedControl.selectedSegmentIndex = 0
+        navigationItem.titleView                = segmentedControl
+        segmentedControl.selectedSegmentIndex   = 0
         segmentedControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
     }
     
+    
     private func setupCollectionView() {
-        collectionView.frame = view.bounds
-        collectionView.backgroundColor = .systemBackground
+        collectionView.frame            = view.bounds
+        collectionView.backgroundColor  = .systemBackground
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        collectionView.delegate         = self
+        collectionView.dataSource       = self
         collectionView.register(CharacterCell.self, forCellWithReuseIdentifier: "Cell")
         collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
         view.addSubview(collectionView)
     }
     
+    
     private func setupLayout() {
-        guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
-            return
-        }
-        let padding: CGFloat = 8
-        flowLayout.sectionInset = .init(top: 0, left: padding, bottom: 0, right: padding)
-        flowLayout.minimumLineSpacing = 0
-        flowLayout.minimumInteritemSpacing = 0
-        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        
+        let padding: CGFloat                = 8
+        flowLayout.sectionInset             = .init(top: 0, left: padding, bottom: 0, right: padding)
+        flowLayout.minimumLineSpacing       = 0
+        flowLayout.minimumInteritemSpacing  = 0
+        flowLayout.estimatedItemSize        = UICollectionViewFlowLayout.automaticSize
     }
+
     
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
         characters = sender.selectedUniverse.stubs
     }
 }
 
+
 extension SingleSectionCharactersViewControler: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         characters.count
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CharacterCell
@@ -108,11 +121,13 @@ extension SingleSectionCharactersViewControler: UICollectionViewDataSource, UICo
         return cell
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header", for: indexPath) as! HeaderView
         headerView.configure(text: "\(characters.count) Character(s)")
         return headerView
     }
+
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let headerView = HeaderView()
@@ -124,17 +139,20 @@ extension SingleSectionCharactersViewControler: UICollectionViewDataSource, UICo
     }
 }
 
+
 struct SingleSectionCharactersViewControllerRepresentable: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+
+
     func makeUIViewController(context: Context) -> UIViewController {
         UINavigationController(rootViewController: SingleSectionCharactersViewControler())
     }
 }
 
+
 struct ViewController_Previews: PreviewProvider {
     static var previews: some View {
         SingleSectionCharactersViewControllerRepresentable()
             .edgesIgnoringSafeArea(.vertical)
-        //            .environment(\.sizeCategory, ContentSizeCategory.accessibilityExtraExtraExtraLarge)
     }
 }

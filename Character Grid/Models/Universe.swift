@@ -12,14 +12,17 @@ enum Universe: CaseIterable {
     
     var stubs: [Character] {
         switch self {
-            case .ff7r:
-                return Character.ff7Stubs
-            case .marvel:
-                return Character.marvelStubs
-            case .dc:
-                return Character.dcStubs
-            case .starwars:
-                return Character.starWarsStubs
+        case .ff7r:
+            return Character.ff7Stubs
+        
+        case .marvel:
+            return Character.marvelStubs
+            
+        case .dc:
+            return Character.dcStubs
+            
+        case .starwars:
+            return Character.starWarsStubs
         }
     }
     
@@ -42,14 +45,17 @@ enum Universe: CaseIterable {
     
     var title: String {
         switch self {
-            case .ff7r:
-                return "FF7R"
-            case .dc:
-                return "DC Comics"
-            case .marvel:
-                return "Marvel"
-            case .starwars:
-                return "Star Wars"
+        case .ff7r:
+            return "FF7R"
+            
+        case .dc:
+            return "DC Comics"
+            
+        case .marvel:
+            return "Marvel"
+            
+        case .starwars:
+            return "Star Wars"
         }
     }
 }

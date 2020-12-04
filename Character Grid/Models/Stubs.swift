@@ -45,11 +45,11 @@ extension Bundle {
         else {
             throw NSError(domain: "", code: NSFileNoSuchFileError, userInfo: [NSLocalizedDescriptionKey: "file not found"])
         }
-        let data = try Data(contentsOf: url)
-        let jsonDecoder = JSONDecoder()
+        let data                        = try Data(contentsOf: url)
+        let jsonDecoder                 = JSONDecoder()
         jsonDecoder.keyDecodingStrategy = keyDecodingStrategy
         
-        let decodedModel = try jsonDecoder.decode(D.self, from: data)
+        let decodedModel                = try jsonDecoder.decode(D.self, from: data)
         return decodedModel
     }
 }

@@ -9,48 +9,51 @@ import UIKit
 import SwiftUI
 
 class CharacterCell: UICollectionViewCell {
-    private var imageView = RoundedImageView()
-    private var textLabel = UILabel()
-    private var vStack = UIStackView()
+    
+    private var imageView   = RoundedImageView()
+    private var textLabel   = UILabel()
+    private var vStack      = UIStackView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
     }
     
+    
     override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
-        
-        let padding: CGFloat = 8
-        let noOfItems = traitCollection.horizontalSizeClass == .compact ? 4 : 8
-        let itemWidth = floor((UIScreen.main.bounds.width - (padding * 2)) / CGFloat(noOfItems))
+        let padding: CGFloat    = 8
+        let noOfItems           = traitCollection.horizontalSizeClass == .compact ? 4 : 8
+        let itemWidth           = floor((UIScreen.main.bounds.width - (padding * 2)) / CGFloat(noOfItems))
         
         return super.systemLayoutSizeFitting(.init(width: itemWidth, height: UIView.layoutFittingExpandedSize.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
     }
     
+    
     func setup(character: Character) {
-        textLabel.text = character.name
+        textLabel.text  = character.name
         imageView.image = UIImage(named: character.imageName)
     }
     
+    
     private func setupLayout() {
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode   = .scaleAspectFit
         
-        textLabel.font = UIFont.preferredFont(forTextStyle: .caption2)
+        textLabel.font                              = .preferredFont(forTextStyle: .caption2)
         textLabel.adjustsFontForContentSizeCategory = true
-        textLabel.textAlignment = .center
+        textLabel.textAlignment                     = .center
         
-        let padding: CGFloat = 8
+        let padding: CGFloat    = 8
         
-        vStack.axis = .vertical
-        vStack.alignment = .center
-        vStack.spacing = padding
-        vStack.translatesAutoresizingMaskIntoConstraints = false
+        vStack.axis                                         = .vertical
+        vStack.alignment                                    = .center
+        vStack.spacing                                      = padding
+        vStack.translatesAutoresizingMaskIntoConstraints    = false
         contentView.addSubview(vStack)
         vStack.addArrangedSubview(imageView)
         vStack.addArrangedSubview(textLabel)
         
-        let imageHeightAnchor = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor)
-        imageHeightAnchor.priority = .init(999)
+        let imageHeightAnchor       = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor)
+        imageHeightAnchor.priority  = .init(999)
         
         NSLayoutConstraint.activate([
             vStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
@@ -61,16 +64,20 @@ class CharacterCell: UICollectionViewCell {
             imageHeightAnchor
         ])
     }
+
     
     required init?(coder: NSCoder) {
         fatalError("Not supported, please register class")
     }
 }
 
+
 struct CharacterCellRepresentable: UIViewRepresentable {
     let character: Character
     
+    
     func updateUIView(_ uiView: CharacterCell, context: Context) {}
+
     
     func makeUIView(context: Context) -> CharacterCell {
         let cell = CharacterCell()
@@ -79,13 +86,15 @@ struct CharacterCellRepresentable: UIViewRepresentable {
     }
 }
 
+
 fileprivate class RoundedImageView: UIImageView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        clipsToBounds = true
-        layer.cornerRadius = max(bounds.width, bounds.height) / 2
+        clipsToBounds       = true
+        layer.cornerRadius  = max(bounds.width, bounds.height) / 2
     }
 }
+
 
 struct CharacterCell_Previews: PreviewProvider {
     static var previews: some View {
